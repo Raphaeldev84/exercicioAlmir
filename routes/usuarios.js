@@ -34,7 +34,7 @@ usuarios.route("/")
 
     gravarBancoDados(db);
 
-    res.json({mensagem: "Aluno criado com sucesso!"})
+    res.status(200).json({mensagem: "Aluno criado com sucesso!"})
     
    
 })
