@@ -3,49 +3,70 @@ const fs = require("fs")// importando biblioteca que manipula os arquivos
 const usuarios = express.Router();
 
 usuarios.route("/")
-.get((req, res) => {
-    //retorna o banco de dados
-    const db = lerBancoDados();
-    res.status(200).json(db)
-})
-.post((req, res) => {
-    const {matricula, nome, media} = req.body
+    .get((req, res) => {
+        //retorna o banco de dados
+        const db = lerBancoDados();
+        res.status(200).json(db)
+    })
+    .post((req, res) => {
+        const { matricula, nome, media } = req.body
 
-    if(!matricula || !nome || !media) {
-        return res.status(400).json({mensagem: "Preencha os campos obrigatórios"});
-        
-    }
-    //retorna o banco de dados
-    const db =lerBancoDados();
+        if (!matricula || !nome || !media) {
+            return res.status(400).json({ mensagem: "Preencha os campos obrigatórios" });
 
-    const alunoEncontrado = db.find(aluno => aluno.matricula === matricula)
+        }
+        //retorna o banco de dados
+        const db = lerBancoDados();
 
-    if(alunoEncontrado) {
-        res.status(400).json({mensagem:"O aluno já existe"})
-    }
+        const alunoEncontrado = db.find(aluno => aluno.matricula === matricula)
 
-    const novoAluno = {
-        matricula,
-        nome,
-        media
-    }
-    
-    db.push(novoAluno);
+        if (alunoEncontrado) {
+            return res.status(400).json({ mensagem: "O aluno já existe" })
+        }
 
-    gravarBancoDados(db);
+        const novoAluno = {
+            matricula,
+            nome,
+            media
+        }
 
-    res.status(200).json({mensagem: "Aluno criado com sucesso!"})
-    
-   
-})
-.put((req, res) => {
-    res.json({mensagem: "put realizado com sucesso!"})
-})
-.delete((req, res) => {
-    res.json({mensagem: "delete realizado com sucesso!"})
-});
+        db.push(novoAluno);
 
-function lerBancoDados(){ // função que retorna o banco de dados
+        gravarBancoDados(db);
+
+        res.status(200).json({ mensagem: "Aluno criado com sucesso!" })
+
+
+    })
+    .put((req, res) => {
+        res.json({ mensagem: "put realizado com sucesso!" })
+    })
+    .delete((req, res) => {
+        const { matricula, nome, media } = req.body;
+
+        if (!matricula || !nome || !media) {
+            return res.status(400).json({ mensagem: "Preencha os campos obrigatórios" });
+        }
+
+        const db = lerBancoDados();
+
+        const alunoEncontrado = db.find(aluno => aluno.matricula === matricula);
+
+
+        if (!alunoEncontrado) {
+            return res.status(404).json({ mensagem: "Aluno inexitente." });
+        }
+
+        //remove o aluno do array do banco de dados
+        const dbModificado = db.filter(aluno => aluno.matricula !== matricula);
+
+        //graa o array modficado no banco de dados
+        gravarBancoDados(dbModificado);
+
+        res.status(200).json({ mensagem: "Aluno deletado com sucesso." })
+    });
+
+function lerBancoDados() { // função que retorna o banco de dados
     const arquivo = fs.readFileSync("./db/db.json"); //leitura do arquivo
     const db = JSON.parse(arquivo); //converte para objeto
     return db;
