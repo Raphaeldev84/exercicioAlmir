@@ -9,7 +9,34 @@ usuarios.route("/")
     res.status(200).json(db)
 })
 .post((req, res) => {
-    res.json({mensagem: "post realizado com sucesso!"})
+    const {matricula, nome, media} = req.body
+
+    if(!matricula || !nome || !media) {
+        return res.status(400).json({mensagem: "Preencha os campos obrigatórios"});
+        
+    }
+    //retorna o banco de dados
+    const db =lerBancoDados();
+
+    const alunoEncontrado = db.find(aluno => aluno.matricula === matricula)
+
+    if(alunoEncontrado) {
+        res.status(400).json({mensagem:"O aluno já existe"})
+    }
+
+    const novoAluno = {
+        matricula,
+        nome,
+        media
+    }
+    
+    db.push(novoAluno);
+
+    gravarBancoDados(db);
+
+    res.json({mensagem: "Aluno criado com sucesso!"})
+    
+   
 })
 .put((req, res) => {
     res.json({mensagem: "put realizado com sucesso!"})
@@ -25,7 +52,7 @@ function lerBancoDados(){ // função que retorna o banco de dados
 }
 
 function gravarBancoDados(db) { //grava o array modificado em formato json no arquivo db.json
-    fs.writeFileSync("./db/db.json", JSON.stringify(db));
+    fs.writeFileSync("./db/db.json", JSON.stringify(db, null, 2));
 }
 
 module.exports = usuarios;
