@@ -39,7 +39,35 @@ usuarios.route("/")
 
     })
     .put((req, res) => {
-        res.json({ mensagem: "put realizado com sucesso!" })
+        const {matricula, nome, media} = req.body;
+
+        if(!matricula || !nome || !media){
+            return res.status(400).json({mensagem: "Campos obrigatórios não informados."});
+        }
+
+        const db = lerBancoDados();
+
+        const alunoEncontrado= db.find(aluno => aluno.matricula === matricula);
+
+        if (!alunoEncontrado) {
+        return res.status(404).json({mensagem: " Aluno inexistente."});
+        }
+        //gera um array sem o objeto que queremos modificar
+        const dbModificado = db.filter(aluno => aluno.matricula !== matricula);
+        
+        //gera um novo objeto com as informações enviadas na requisição
+        const alunoModificado = {
+            matricula,
+            nome,
+            media
+        }
+
+        //adiciona o novo objeto ao array modificado
+        dbModificado.push(alunoModificado);
+
+        gravarBancoDados(dbModificado);
+
+        res.status(200).json({ mensagem: "Aluno atualizado com sucesso!" })
     })
     .delete((req, res) => {
         const { matricula, nome, media } = req.body;
@@ -63,7 +91,7 @@ usuarios.route("/")
         //graa o array modficado no banco de dados
         gravarBancoDados(dbModificado);
 
-        res.status(200).json({ mensagem: "Aluno deletado com sucesso." })
+        res.status(200).json({ mensagem: "Aluno deletado com sucesso." });
     });
 
 function lerBancoDados() { // função que retorna o banco de dados
