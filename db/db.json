@@ -1,17 +1,37 @@
 [
   {
-    "matricula": "02042023",
-    "nome": "Victoria Dourado Scapini",
-    "media": "5"
-  },
-  {
     "matricula": "01042424",
     "nome": "Lais",
     "media": "7"
   },
   {
+    "matricula": "01042243",
+    "nome": "Renata Soares",
+    "media": "9.5"
+  },
+  {
+    "matricula": "01552243",
+    "nome": "José Almir",
+    "media": "9.0"
+  },
+  {
+    "matricula": "01552293",
+    "nome": "João Gabriel",
+    "media": "8.0"
+  },
+  {
+    "matricula": "01557529",
+    "nome": "Fabio Oliveira",
+    "media": "5.0"
+  },
+  {
     "matricula": "01042855",
     "nome": "Raphael Faria",
     "media": "10"
+  },
+  {
+    "matricula": "01157529",
+    "nome": "Bruno Motta",
+    "media": "6.0"
   }
 ]
